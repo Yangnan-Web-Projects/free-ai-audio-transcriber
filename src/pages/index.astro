@@ -1,0 +1,14 @@
+---
+import { TranscriberApp } from '@components/TranscriberApp';
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const title = 'Free AI Audio Transcriber - Audio to Text and Subtitles';
+const description =
+  'Convert audio and video files into TXT, SRT, and VTT subtitles directly in your browser. Private, free, and no upload required.';
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/" showFooter={false}>
+  <main>
+    <TranscriberApp client:load />
+  </main>
+</BaseLayout>

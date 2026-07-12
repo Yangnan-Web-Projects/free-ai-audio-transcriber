@@ -1,0 +1,49 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const title = 'Privacy Policy - Free AI Audio Transcriber';
+const description =
+  'Privacy policy for Free AI Audio Transcriber. Files are processed locally in your browser by default and are not uploaded to a server.';
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/privacy">
+  <main>
+    <section class="content-hero">
+      <div class="container narrow">
+        <p class="eyebrow">Privacy</p>
+        <h1>Privacy Policy</h1>
+        <p>Free AI Audio Transcriber is designed as a privacy-friendly browser-local tool.</p>
+      </div>
+    </section>
+
+    <section class="section-band">
+      <div class="container prose">
+        <h2>Local file processing</h2>
+        <p>
+          Your file is processed locally in your browser and is not uploaded to our server by default.
+          The MVP does not include server-side audio or video upload, cloud transcription, backend
+          storage, user accounts, or a database.
+        </p>
+
+        <h2>Files are not saved by this app</h2>
+        <p>
+          The application does not save your audio or video files. Browser caching may store AI model
+          files so future transcription can start faster, but your source media is not intentionally
+          stored by this project.
+        </p>
+
+        <h2>No sale of user data</h2>
+        <p>
+          We do not sell user data. This MVP does not include advertising scripts, analytics scripts,
+          tracking pixels, or account-based history.
+        </p>
+
+        <h2>Future updates</h2>
+        <p>
+          If future versions add analytics, advertising, optional cloud transcription, or any server
+          storage, this privacy policy must be updated before those features are enabled.
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

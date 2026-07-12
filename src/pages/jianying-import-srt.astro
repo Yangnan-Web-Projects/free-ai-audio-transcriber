@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const title = 'How to Import SRT Subtitles into Jianying / CapCut';
+const description =
+  'A Chinese guide for importing SRT subtitle files into Jianying and CapCut workflows after using a free AI audio transcriber.';
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/jianying-import-srt">
+  <main>
+    <section class="content-hero">
+      <div class="container narrow">
+        <p class="eyebrow">中文教程</p>
+        <h1>如何把 SRT 字幕导入剪映 / CapCut</h1>
+        <p>
+          这个页面面向中文用户，说明如何把 Free AI Audio Transcriber 生成的 SRT 字幕文件导入剪映或
+          CapCut 工作流。转写工具主界面默认使用英文，方便未来面向国际 SEO。
+        </p>
+        <a class="button primary-button" href="/#tools">打开转写工具</a>
+      </div>
+    </section>
+
+    <section class="section-band">
+      <div class="container content-grid">
+        <article>
+          <h2>导入步骤</h2>
+          <ol class="step-list">
+            <li>先在首页上传音频或视频文件，完成本地转写。</li>
+            <li>点击 Download SRT，保存 `.srt` 字幕文件。</li>
+            <li>打开剪映或 CapCut 项目，导入你的视频素材。</li>
+            <li>在字幕或文本相关入口中选择导入本地字幕文件。</li>
+            <li>选择刚刚下载的 SRT 文件，并检查时间轴是否对齐。</li>
+            <li>根据视频内容手动校对错字、断句和标点。</li>
+          </ol>
+        </article>
+        <article>
+          <h2>使用建议</h2>
+          <ul class="check-list">
+            <li>如果时间轴不够准确，可以在剪映里拖动字幕片段微调。</li>
+            <li>如果中文标点不理想，建议导出后人工检查。</li>
+            <li>长视频可以先分段转写，减少浏览器内存压力。</li>
+            <li>如果 MP4 导入失败，可以先提取音频为 MP3 或 WAV 再转写。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-band subtle-band">
+      <div class="container faq-layout">
+        <div class="section-heading">
+          <p class="eyebrow">FAQ</p>
+          <h2>剪映字幕常见问题</h2>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary>SRT 导入后乱码怎么办？</summary>
+            <p>建议使用 UTF-8 编码保存字幕文件。本工具导出的 SRT 默认使用 UTF-8 文本内容。</p>
+          </details>
+          <details>
+            <summary>字幕时间不准怎么办？</summary>
+            <p>本地 AI 生成的时间戳可能需要人工校对。可以在剪映或 CapCut 中手动拖动和拆分字幕。</p>
+          </details>
+          <details>
+            <summary>可以直接导入 VTT 吗？</summary>
+            <p>剪映/CapCut 工作流通常优先使用 SRT。如果 VTT 不被接受，请下载 SRT 版本。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://free-ai-audio-transcriber.pages.dev/sitemap-index.xml

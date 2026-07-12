@@ -1,0 +1,37 @@
+---
+import { siteCopy } from '@lib/copy';
+---
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Private browser-local transcription</p>
+      <h1>{siteCopy.hero.title}</h1>
+      <p>{siteCopy.hero.subtitle}</p>
+      <div class="hero-actions">
+        <a class="button primary-button" href="#tools">{siteCopy.hero.cta}</a>
+        <a class="button ghost-button" href="/privacy">Read privacy policy</a>
+      </div>
+    </div>
+    <div class="hero-preview" aria-label="Transcription workflow preview">
+      <div class="preview-topbar">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="waveform" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="preview-lines">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="preview-downloads">
+        <span>TXT</span>
+        <span>SRT</span>
+        <span>VTT</span>
+      </div>
+    </div>
+  </div>
+</section>

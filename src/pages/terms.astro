@@ -1,0 +1,49 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const title = 'Terms of Service - Free AI Audio Transcriber';
+const description =
+  'Terms of service for Free AI Audio Transcriber. Transcription results may contain errors and the tool is provided as is.';
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/terms">
+  <main>
+    <section class="content-hero">
+      <div class="container narrow">
+        <p class="eyebrow">Terms</p>
+        <h1>Terms of Service</h1>
+        <p>These terms describe the basic conditions for using Free AI Audio Transcriber.</p>
+      </div>
+    </section>
+
+    <section class="section-band">
+      <div class="container prose">
+        <h2>Transcription accuracy</h2>
+        <p>
+          AI transcription results may contain errors, missing words, incorrect punctuation, or
+          inaccurate timestamps. You should review and edit transcripts and subtitles before using
+          them in published, legal, medical, educational, or professional materials.
+        </p>
+
+        <h2>Device and browser limits</h2>
+        <p>
+          Browser and device performance can affect model loading, transcription speed, file decoding,
+          and overall reliability. Long files or heavier models may not work well on older devices or
+          mobile browsers.
+        </p>
+
+        <h2>No hosted storage</h2>
+        <p>
+          The MVP does not provide user accounts, file history, cloud storage, or server-side
+          transcription queues.
+        </p>
+
+        <h2>Provided as is</h2>
+        <p>
+          Free AI Audio Transcriber is provided as is, without warranties of any kind. Use the tool at
+          your own discretion and verify output before relying on it.
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

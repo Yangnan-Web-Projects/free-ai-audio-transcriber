@@ -1,0 +1,68 @@
+---
+import type { SeoPageContent } from '@lib/seo-pages';
+import { seoPages } from '@lib/seo-pages';
+
+interface Props {
+  page: SeoPageContent;
+}
+
+const { page } = Astro.props;
+const related = seoPages.filter((item) => item.slug !== page.slug).slice(0, 4);
+---
+
+<main>
+  <section class="content-hero">
+    <div class="container narrow">
+      <p class="eyebrow">Free browser-local transcription</p>
+      <h1>{page.h1}</h1>
+      <p>{page.intro}</p>
+      <a class="button primary-button" href="/#tools">Open the transcriber</a>
+    </div>
+  </section>
+
+  <section class="section-band">
+    <div class="container content-grid">
+      <article>
+        <h2>How it works</h2>
+        <ol class="step-list">
+          {page.steps.map((step) => <li>{step}</li>)}
+        </ol>
+      </article>
+      <article>
+        <h2>Why use it</h2>
+        <ul class="check-list">
+          {page.benefits.map((benefit) => <li>{benefit}</li>)}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-band subtle-band">
+    <div class="container faq-layout">
+      <div class="section-heading">
+        <p class="eyebrow">FAQ</p>
+        <h2>{page.h1} questions</h2>
+      </div>
+      <div class="faq-list">
+        {page.faq.map((item) => (
+          <details>
+            <summary>{item.question}</summary>
+            <p>{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-band">
+    <div class="container related-links">
+      <h2>Related tools</h2>
+      <div>
+        {related.map((item) => (
+          <a href={`/${item.slug}`}>{item.h1}</a>
+        ))}
+        <a href="/jianying-import-srt">Import SRT into Jianying / CapCut</a>
+      </div>
+    </div>
+  </section>
+</main>

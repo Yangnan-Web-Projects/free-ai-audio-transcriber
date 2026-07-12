@@ -1,0 +1,24 @@
+---
+import { siteCopy } from '@lib/copy';
+---
+
+<section class="section-band" id="tools">
+  <div class="container">
+    <div class="section-heading wide-heading">
+      <p class="eyebrow">Why this tool</p>
+      <h2>Simple transcription for everyday files</h2>
+      <p>
+        The MVP is intentionally focused: upload media, transcribe locally, preview text, and export
+        subtitles.
+      </p>
+    </div>
+    <div class="feature-grid">
+      {siteCopy.features.map((feature) => (
+        <article class="feature-card">
+          <h3>{feature.title}</h3>
+          <p>{feature.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

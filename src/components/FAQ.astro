@@ -1,0 +1,21 @@
+---
+import { siteCopy } from '@lib/copy';
+---
+
+<section class="section-band subtle-band" id="faq">
+  <div class="container faq-layout">
+    <div class="section-heading">
+      <p class="eyebrow">FAQ</p>
+      <h2>Common questions</h2>
+      <p>Short answers for privacy, export formats, browser support, and expected accuracy.</p>
+    </div>
+    <div class="faq-list">
+      {siteCopy.faq.map((item) => (
+        <details>
+          <summary>{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

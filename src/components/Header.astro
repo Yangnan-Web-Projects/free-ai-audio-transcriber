@@ -1,0 +1,11 @@
+---
+import { HeaderBrand } from './HeaderBrand';
+import { PageLanguageSelector } from './PageLanguageSelector';
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <HeaderBrand client:load />
+    <PageLanguageSelector client:only="react" />
+  </div>
+</header>

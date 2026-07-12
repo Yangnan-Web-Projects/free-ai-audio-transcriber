@@ -1,0 +1,18 @@
+---
+import SeoLanding from '@components/SeoLanding.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { seoPages } from '@lib/seo-pages';
+
+export function getStaticPaths() {
+  return seoPages.map((page) => ({
+    params: { slug: page.slug },
+    props: { page }
+  }));
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout title={page.title} description={page.description} canonicalPath={`/${page.slug}`}>
+  <SeoLanding page={page} />
+</BaseLayout>
