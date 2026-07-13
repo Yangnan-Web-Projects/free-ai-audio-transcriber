@@ -1,0 +1,72 @@
+---
+import type { LocalizedSeoLocale } from '@lib/localized-seo';
+
+interface Props {
+  locale: LocalizedSeoLocale;
+  toolSlug?: 'audio-to-text' | 'mp3-to-text' | 'audio-to-srt';
+}
+
+const { locale, toolSlug } = Astro.props;
+const tool = toolSlug ? locale.tools[toolSlug] : null;
+const heading = tool?.h1 ?? locale.homeHeading;
+const intro = tool?.intro ?? locale.homeIntro;
+---
+
+<main>
+  <section class="content-hero">
+    <div class="container narrow">
+      <p class="eyebrow">{locale.eyebrow}</p>
+      <h1>{heading}</h1>
+      <p>{intro}</p>
+      <a class="button primary-button" href="/#tools">{locale.openTool}</a>
+    </div>
+  </section>
+
+  <section class="section-band">
+    <div class="container content-grid">
+      <article>
+        <h2>{locale.howItWorks}</h2>
+        <ol class="step-list">
+          {locale.steps.map((step) => <li>{step}</li>)}
+        </ol>
+      </article>
+      <article>
+        <h2>{locale.whyUseIt}</h2>
+        <ul class="check-list">
+          {locale.benefits.map((benefit) => <li>{benefit}</li>)}
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-band subtle-band">
+    <div class="container faq-layout">
+      <div class="section-heading">
+        <p class="eyebrow">{locale.faq}</p>
+        <h2>{heading}</h2>
+      </div>
+      <div class="faq-list">
+        <details open>
+          <summary>{locale.faq}</summary>
+          <p>{locale.benefits[0]} {locale.openTool}.</p>
+        </details>
+        <details>
+          <summary>{locale.whyUseIt}</summary>
+          <p>{locale.benefits.join(' ')}</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-band">
+    <div class="container related-links">
+      <h2>{locale.relatedTools}</h2>
+      <div>
+        {Object.entries(locale.tools).map(([slug, item]) => (
+          <a href={`/${locale.slug}/${slug}`}>{item.h1}</a>
+        ))}
+        <a href="/">{locale.openTool}</a>
+      </div>
+    </div>
+  </section>
+</main>

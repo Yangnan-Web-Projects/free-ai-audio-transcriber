@@ -9,7 +9,7 @@ import {
   WORKER_STARTUP_TIMEOUT_MS
 } from '@lib/load-watchdog';
 import {
-  getInitialLanguagePreference,
+  getStoredLanguagePreference,
   LANGUAGE_PREFERENCE_EVENT
 } from '@lib/language-preference';
 import {
@@ -35,7 +35,11 @@ import { ProgressPanel } from './ProgressPanel';
 import { TranscriptPreview } from './TranscriptPreview';
 import { UploadBox } from './UploadBox';
 
-export function TranscriberApp() {
+interface Props {
+  initialLanguage?: LanguageCode;
+}
+
+export function TranscriberApp({ initialLanguage = 'english' }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [modelMode, setModelMode] = useState<ModelMode>('blue-whale');
@@ -128,9 +132,10 @@ export function TranscriberApp() {
   }, []);
 
   useEffect(() => {
-    const initialLanguage = getInitialLanguagePreference();
-    setUiLanguage(initialLanguage);
-    setLanguageCode(initialLanguage);
+    const storedLanguage = getStoredLanguagePreference();
+    const resolvedLanguage = storedLanguage ?? initialLanguage;
+    setUiLanguage(resolvedLanguage);
+    setLanguageCode(resolvedLanguage);
 
     const handlePreferenceChange = (event: Event) => {
       const code = (event as CustomEvent<{ code?: LanguageCode }>).detail?.code;

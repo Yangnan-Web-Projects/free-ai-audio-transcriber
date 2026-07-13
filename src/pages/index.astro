@@ -1,13 +1,19 @@
 ---
 import { TranscriberApp } from '@components/TranscriberApp';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import { getAlternateLinks } from '@lib/localized-seo';
 
 const title = 'Free AI Audio Transcriber - Audio to Text and Subtitles';
 const description =
   'Convert audio and video files into TXT, SRT, and VTT subtitles directly in your browser. Private, free, and no upload required.';
+const siteUrl = Astro.site ?? new URL(import.meta.env.PUBLIC_SITE_URL || 'https://free-ai-audio-transcriber.pages.dev');
+const alternateLinks = [
+  ...getAlternateLinks(siteUrl, (locale) => `/${locale.slug}/`),
+  { hreflang: 'x-default', href: new URL('/', siteUrl).toString() }
+];
 ---
 
-<BaseLayout title={title} description={description} canonicalPath="/" showFooter={false}>
+<BaseLayout title={title} description={description} canonicalPath="/" alternateLinks={alternateLinks} showFooter={false}>
   <main>
     <TranscriberApp client:load />
   </main>

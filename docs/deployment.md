@@ -79,6 +79,23 @@ audio and video processing stays local in the visitor's browser.
 https://your-domain.com/sitemap-index.xml
 ```
 
+The site also publishes crawlable language-specific pages. The current
+language home paths are `/en/`, `/zh-cn/`, `/zh-tw/`, `/ja/`, `/ko/`, `/es/`,
+`/fr/`, and `/de/`. Core tool pages are available below those paths for
+`audio-to-text`, `mp3-to-text`, and `audio-to-srt`. Each localized page has its
+own canonical URL and `hreflang` links.
+
+After deployment, request indexing for the root page and the most important
+localized pages. Search engines decide independently when to crawl and rank a
+new site; sitemap submission improves discovery but does not guarantee a
+ranking or immediate inclusion.
+
+## Bing Webmaster Tools
+
+Add the production URL in [Bing Webmaster Tools](https://www.bing.com/webmasters/)
+and submit the same `sitemap-index.xml`. Bing can also import a verified site
+and sitemap from Google Search Console.
+
 ## Baidu Search Resource Platform
 
 If you later target Baidu search, create a Baidu Search Resource Platform account, verify the domain, and submit the sitemap URL. If the site is hosted outside mainland China, ICP filing is not required for this MVP, but mainland indexing and speed can vary.

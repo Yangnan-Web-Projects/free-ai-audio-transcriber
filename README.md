@@ -16,6 +16,8 @@ and available storage.
 - Choose Ant, Fox, Tiger, or Whale model presets.
 - Use English, Chinese (Simplified), Chinese (Traditional), Japanese, Korean,
   Spanish, French, or German interfaces and transcription settings.
+- Visit crawlable language-specific SEO pages such as `/zh-cn/audio-to-text`,
+  `/ko/audio-to-text`, and `/ja/audio-to-text`.
 - Review timestamped transcription segments before exporting.
 - Export TXT for text workflows, SRT for editing apps, VTT for web captions,
   and LRC for timed lyrics.
@@ -76,7 +78,7 @@ npm run build
 5. Configure `PUBLIC_SITE_URL` and `PUBLIC_GITHUB_URL` for your domain and fork.
 
 See [deployment notes](docs/deployment.md) for custom domains, model delivery,
-and sitemap submission.
+multilingual SEO, and sitemap submission.
 
 ## Privacy and Limitations
 

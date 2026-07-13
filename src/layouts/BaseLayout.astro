@@ -8,22 +8,32 @@ interface Props {
   description: string;
   canonicalPath?: string;
   showFooter?: boolean;
+  htmlLang?: string;
+  alternateLinks?: Array<{ hreflang: string; href: string }>;
 }
 
-const { title, description, canonicalPath = Astro.url.pathname, showFooter = true } = Astro.props;
+const {
+  title,
+  description,
+  canonicalPath = Astro.url.pathname,
+  showFooter = true,
+  htmlLang = 'en',
+  alternateLinks = []
+} = Astro.props;
 const fallbackSite = import.meta.env.PUBLIC_SITE_URL || 'https://free-ai-audio-transcriber.pages.dev';
 const siteUrl = Astro.site ?? new URL(fallbackSite);
 const canonical = new URL(canonicalPath, siteUrl).toString();
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {alternateLinks.map((alternate) => <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />)}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate icon" href="/favicon.ico" sizes="any" />
     <meta property="og:type" content="website" />
