@@ -16,6 +16,7 @@ import {
   getLanguageOption,
   getModelOption
 } from '@lib/model-options';
+import { normalizeModelHost } from '@lib/model-source-policy';
 import { getHomeUiCopy } from '@lib/ui-copy';
 import type {
   LanguageCode,
@@ -348,7 +349,8 @@ export function TranscriberApp() {
         type: 'start',
         audio,
         model: resolvedModel,
-        language: getLanguageOption(languageCode)
+        language: getLanguageOption(languageCode),
+        modelHost: normalizeModelHost(import.meta.env.PUBLIC_TRANSFORMERS_REMOTE_HOST)
       } satisfies WorkerRequest;
 
       worker.postMessage(request, [audio.buffer as ArrayBuffer]);

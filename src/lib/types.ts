@@ -84,6 +84,8 @@ export interface LanguageOption {
   description: string;
 }
 
+export type ModelSourceId = 'official' | 'mirror';
+
 export type WorkerPhase = 'loading-model' | 'transcribing' | 'normalizing';
 
 export type WorkerErrorCode =
@@ -100,6 +102,7 @@ export type WorkerRequest =
       audio: Float32Array;
       model: ModelOption;
       language: LanguageOption;
+      modelHost: string;
     }
   | { type: 'cancel' };
 
@@ -113,6 +116,7 @@ export type WorkerResponse =
     }
   | {
       type: 'model-progress';
+      source: ModelSourceId;
       status: string;
       file?: string;
       progress?: number;

@@ -1,5 +1,11 @@
 import { env, pipeline } from '@huggingface/transformers';
 import { normalizeTranscriptForLanguage } from './chinese-normalize';
+import {
+  createModelSourcePlan,
+  MODEL_DOWNLOAD_STALL_MS,
+  shouldTryMirrorSource,
+  type ModelSource
+} from './model-source-policy';
 import { textToFallbackSegments } from './transcript-format';
 import type {
   ModelDtype,
@@ -19,17 +25,20 @@ if (configuredLocalModelPath) {
   env.localModelPath = configuredLocalModelPath.replace(/\/?$/, '/');
 }
 
-const configuredRemoteHost = import.meta.env.PUBLIC_TRANSFORMERS_REMOTE_HOST;
-if (configuredRemoteHost) {
-  env.remoteHost = configuredRemoteHost.replace(/\/$/, '');
-}
-
 let transcriber: unknown;
 let loadedModelKey = '';
 let cancelled = false;
 let activeRunId = 0;
 let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
 let heartbeatPhase: WorkerPhase = 'loading-model';
+let activeLoadAbortController: AbortController | undefined;
+
+class ModelDownloadStalledError extends Error {
+  constructor() {
+    super('Model download stalled before receiving more data.');
+    this.name = 'ModelDownloadStalledError';
+  }
+}
 
 function send(message: WorkerResponse) {
   self.postMessage(message);
@@ -59,7 +68,7 @@ function classifyError(error: unknown): { code: WorkerErrorCode; message: string
     };
   }
 
-  if (/fetch|network|failed to load|connection|timeout/i.test(message)) {
+  if (/abort|fetch|network|failed to load|connection|timeout/i.test(message)) {
     return {
       code: 'network',
       message: 'The browser could not retrieve the model files.'
@@ -141,7 +150,104 @@ function normalizeResult(result: unknown): { text: string; segments: TranscriptS
   };
 }
 
-async function loadTranscriber(modelId: string, dtype: ModelDtype) {
+async function loadTranscriberFromSource({
+  modelId,
+  dtype,
+  source
+}: {
+  modelId: string;
+  dtype: ModelDtype;
+  source: ModelSource;
+}) {
+  const originalFetch = env.fetch;
+  const abortController = new AbortController();
+  let remoteRequestStartedAt: number | undefined;
+  let lastDownloadProgressAt: number | undefined;
+  let highestLoadedBytes = 0;
+  let stalled = false;
+
+  activeLoadAbortController = abortController;
+  env.remoteHost = source.host;
+  env.fetch = (input, init) => {
+    const requestUrl = typeof input === 'string' ? input : input.toString();
+    if (requestUrl.startsWith(source.host) && remoteRequestStartedAt === undefined) {
+      remoteRequestStartedAt = Date.now();
+      lastDownloadProgressAt = remoteRequestStartedAt;
+    }
+
+    return originalFetch(input, {
+      ...init,
+      signal: abortController.signal
+    });
+  };
+
+  const stallTimer = setInterval(() => {
+    if (
+      remoteRequestStartedAt !== undefined &&
+      lastDownloadProgressAt !== undefined &&
+      Date.now() - lastDownloadProgressAt >= MODEL_DOWNLOAD_STALL_MS
+    ) {
+      stalled = true;
+      abortController.abort();
+    }
+  }, 1_000);
+
+  try {
+    transcriber = await pipeline('automatic-speech-recognition', modelId, {
+      device: 'wasm',
+      dtype,
+      progress_callback: (progressData: unknown) => {
+        const data = progressData as {
+          status?: string;
+          file?: string;
+          progress?: number;
+          loaded?: number;
+          total?: number;
+        };
+
+        if (typeof data.loaded === 'number' && data.loaded > highestLoadedBytes) {
+          highestLoadedBytes = data.loaded;
+          lastDownloadProgressAt = Date.now();
+        }
+
+        send({
+          type: 'model-progress',
+          source: source.id,
+          status: data.status ?? 'loading',
+          file: data.file,
+          progress: data.progress,
+          loaded: data.loaded,
+          total: data.total,
+          message:
+            typeof data.progress === 'number'
+              ? `Downloading model files: ${Math.round(data.progress)}%`
+              : data.file
+                ? `Preparing model file: ${data.file}`
+                : 'Preparing local AI model files.'
+        });
+      }
+    });
+
+    return transcriber as (
+      input: Float32Array,
+      options: Record<string, unknown>
+    ) => Promise<unknown>;
+  } catch (error) {
+    transcriber = undefined;
+    if (stalled) {
+      throw new ModelDownloadStalledError();
+    }
+    throw error;
+  } finally {
+    clearInterval(stallTimer);
+    env.fetch = originalFetch;
+    if (activeLoadAbortController === abortController) {
+      activeLoadAbortController = undefined;
+    }
+  }
+}
+
+async function loadTranscriber(modelId: string, dtype: ModelDtype, modelHost: string) {
   const modelKey = `${modelId}:${dtype}`;
 
   if (transcriber && loadedModelKey === modelKey) {
@@ -161,53 +267,36 @@ async function loadTranscriber(modelId: string, dtype: ModelDtype) {
     message: `Loading ${modelId} (${dtype}). First use can take a while.`
   });
 
-  transcriber = await pipeline('automatic-speech-recognition', modelId, {
-    device: 'wasm',
-    dtype,
-    progress_callback: (progressData: unknown) => {
-      const data = progressData as {
-        status?: string;
-        file?: string;
-        progress?: number;
-        loaded?: number;
-        total?: number;
-      };
+  const sources = createModelSourcePlan(modelHost);
+  let lastError: unknown;
 
-      send({
-        type: 'model-progress',
-        status: data.status ?? 'loading',
-        file: data.file,
-        progress: data.progress,
-        loaded: data.loaded,
-        total: data.total,
-        message:
-          typeof data.progress === 'number'
-            ? `Downloading model files: ${Math.round(data.progress)}%`
-            : data.file
-              ? `Preparing model file: ${data.file}`
-              : 'Preparing local AI model files.'
-      });
+  for (const source of [sources.official, sources.mirror]) {
+    try {
+      const runner = await loadTranscriberFromSource({ modelId, dtype, source });
+      loadedModelKey = modelKey;
+      return runner;
+    } catch (error) {
+      lastError = error;
+      const stalled = error instanceof ModelDownloadStalledError;
+      if (!shouldTryMirrorSource({ source, error, stalled, cancelled })) {
+        throw error;
+      }
     }
-  });
+  }
 
-  loadedModelKey = modelKey;
-
-  return transcriber as (
-    input: Float32Array,
-    options: Record<string, unknown>
-  ) => Promise<unknown>;
+  throw lastError;
 }
 
 async function start(request: Extract<WorkerRequest, { type: 'start' }>) {
   cancelled = false;
   const runId = ++activeRunId;
-  const { audio, model, language } = request;
+  const { audio, model, language, modelHost } = request;
   const modelId = model.modelId;
 
   startHeartbeat('loading-model');
 
   try {
-    const runner = await loadTranscriber(modelId, model.dtype);
+    const runner = await loadTranscriber(modelId, model.dtype, modelHost);
 
     if (cancelled) {
       return;
@@ -284,6 +373,7 @@ self.addEventListener('message', (event: MessageEvent<WorkerRequest>) => {
   if (event.data.type === 'cancel') {
     cancelled = true;
     activeRunId += 1;
+    activeLoadAbortController?.abort();
     stopHeartbeat();
     send({
       type: 'status',
