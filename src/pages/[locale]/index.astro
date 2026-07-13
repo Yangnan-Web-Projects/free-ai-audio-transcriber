@@ -1,35 +1,30 @@
 ---
 import { TranscriberApp } from '@components/TranscriberApp';
-import LocalizedSeoLanding from '@components/LocalizedSeoLanding.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { getAlternateLinks, localizedSeoLocales } from '@lib/localized-seo';
+import { getAlternateLinks, localizedHomeLocales } from '@lib/localized-home';
 
 export function getStaticPaths() {
-  return localizedSeoLocales.map((locale) => ({ params: { locale: locale.slug }, props: { locale } }));
+  return localizedHomeLocales.map((locale) => ({ params: { locale: locale.slug }, props: { locale } }));
 }
 
 const { locale } = Astro.props;
 const siteUrl = Astro.site ?? new URL(import.meta.env.PUBLIC_SITE_URL || 'https://free-ai-audio-transcriber.pages.dev');
 const alternateLinks = [
+  { hreflang: 'en', href: new URL('/', siteUrl).toString() },
   ...getAlternateLinks(siteUrl, (item) => `/${item.slug}/`),
   { hreflang: 'x-default', href: new URL('/', siteUrl).toString() }
 ];
 ---
 
 <BaseLayout
-  title={locale.homeTitle}
-  description={locale.homeDescription}
+  title={locale.title}
+  description={locale.description}
   canonicalPath={`/${locale.slug}/`}
   htmlLang={locale.htmlLang}
   alternateLinks={alternateLinks}
   showFooter={false}
 >
   <main>
-    <LocalizedSeoLanding locale={locale} />
-    <section id="tools" class="localized-tool-shell">
-      <div class="container">
-        <TranscriberApp client:load initialLanguage={locale.code} />
-      </div>
-    </section>
+    <TranscriberApp client:load initialLanguage={locale.code} />
   </main>
 </BaseLayout>

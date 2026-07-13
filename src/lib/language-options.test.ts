@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { getStoredLanguagePreference, LANGUAGE_PREFERENCE_KEY } from './language-preference';
+import {
+  getLanguageCodeFromPath,
+  getLanguageHomePath,
+  getStoredLanguagePreference,
+  LANGUAGE_PREFERENCE_KEY
+} from './language-preference';
 import { getDefaultLanguageCode, languageOptions } from './model-options';
 import { getHomeUiCopy } from './ui-copy';
 
@@ -42,5 +47,15 @@ describe('language options', () => {
 
     vi.stubGlobal('navigator', { languages: ['zh-HK'], language: 'zh-HK' });
     expect(getDefaultLanguageCode()).toBe('zh-hant');
+  });
+
+  it('maps page languages to the simple localized homepage paths', () => {
+    expect(getLanguageHomePath('english')).toBe('/');
+    expect(getLanguageHomePath('zh-hans')).toBe('/zh-cn/');
+    expect(getLanguageHomePath('zh-hant')).toBe('/zh-tw/');
+    expect(getLanguageHomePath('korean')).toBe('/ko/');
+    expect(getLanguageCodeFromPath('/')).toBe('english');
+    expect(getLanguageCodeFromPath('/zh-cn/')).toBe('zh-hans');
+    expect(getLanguageCodeFromPath('/audio-to-text/')).toBeNull();
   });
 });

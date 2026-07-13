@@ -79,11 +79,10 @@ audio and video processing stays local in the visitor's browser.
 https://your-domain.com/sitemap-index.xml
 ```
 
-The site also publishes crawlable language-specific pages. The current
-language home paths are `/en/`, `/zh-cn/`, `/zh-tw/`, `/ja/`, `/ko/`, `/es/`,
-`/fr/`, and `/de/`. Core tool pages are available below those paths for
-`audio-to-text`, `mp3-to-text`, and `audio-to-srt`. Each localized page has its
-own canonical URL and `hreflang` links.
+The site also publishes crawlable language-specific home pages. English uses
+the root `/`; the other language paths are `/zh-cn/`, `/zh-tw/`, `/ja/`,
+`/ko/`, `/es/`, `/fr/`, and `/de/`. Each localized homepage has its own
+canonical URL and `hreflang` links while keeping the same tool layout.
 
 After deployment, request indexing for the root page and the most important
 localized pages. Search engines decide independently when to crawl and rank a

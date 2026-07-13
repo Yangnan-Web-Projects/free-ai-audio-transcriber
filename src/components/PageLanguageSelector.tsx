@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Globe2 } from 'lucide-react';
 import {
+  getLanguageCodeFromPath,
+  getLanguageHomePath,
   getInitialLanguagePreference,
   LANGUAGE_PREFERENCE_EVENT,
   pageLanguageOptions,
@@ -15,7 +17,7 @@ export function PageLanguageSelector() {
     'https://github.com/yangnan-web-projects/free-ai-audio-transcriber';
 
   useEffect(() => {
-    setSelected(getInitialLanguagePreference());
+    setSelected(getLanguageCodeFromPath(window.location.pathname) ?? getInitialLanguagePreference());
 
     const handlePreferenceChange = (event: Event) => {
       const code = (event as CustomEvent<{ code?: LanguageCode }>).detail?.code;
@@ -34,7 +36,11 @@ export function PageLanguageSelector() {
         <Globe2 size={18} aria-hidden="true" />
         <select
           value={selected}
-          onChange={(event) => setLanguagePreference(event.target.value as LanguageCode)}
+          onChange={(event) => {
+            const code = event.target.value as LanguageCode;
+            setLanguagePreference(code);
+            window.location.assign(getLanguageHomePath(code));
+          }}
         >
           {pageLanguageOptions.map((option) => (
             <option key={option.code} value={option.code}>

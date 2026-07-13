@@ -19,6 +19,29 @@ export const pageLanguageOptions: Array<{
   { code: 'german', label: 'Deutsch', shortLabel: 'DE' }
 ];
 
+const languageHomePaths: Record<Exclude<LanguageCode, 'auto'>, string> = {
+  english: '/',
+  'zh-hans': '/zh-cn/',
+  'zh-hant': '/zh-tw/',
+  japanese: '/ja/',
+  korean: '/ko/',
+  spanish: '/es/',
+  french: '/fr/',
+  german: '/de/'
+};
+
+export function getLanguageHomePath(code: LanguageCode) {
+  return code === 'auto' ? languageHomePaths.english : languageHomePaths[code];
+}
+
+export function getLanguageCodeFromPath(pathname: string): LanguageCode | null {
+  const normalizedPath = pathname.endsWith('/') ? pathname : `${pathname}/`;
+  const match = (Object.entries(languageHomePaths) as Array<[Exclude<LanguageCode, 'auto'>, string]>).find(
+    ([, path]) => path === normalizedPath
+  );
+  return match?.[0] ?? null;
+}
+
 export function getStoredLanguagePreference(): LanguageCode | null {
   if (typeof window === 'undefined') {
     return null;

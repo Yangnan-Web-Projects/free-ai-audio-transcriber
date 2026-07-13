@@ -16,8 +16,8 @@ and available storage.
 - Choose Ant, Fox, Tiger, or Whale model presets.
 - Use English, Chinese (Simplified), Chinese (Traditional), Japanese, Korean,
   Spanish, French, or German interfaces and transcription settings.
-- Visit crawlable language-specific SEO pages such as `/zh-cn/audio-to-text`,
-  `/ko/audio-to-text`, and `/ja/audio-to-text`.
+- Visit crawlable language-specific home pages such as `/zh-cn/`, `/ko/`, and
+  `/ja/`.
 - Review timestamped transcription segments before exporting.
 - Export TXT for text workflows, SRT for editing apps, VTT for web captions,
   and LRC for timed lyrics.
